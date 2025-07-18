@@ -21,7 +21,7 @@
 Замість цього:
 
 1. **Email**: Надішліть деталі на security@retroconsole.dev
-2. **Encrypted**: Використовуйте наш PGP ключ для шифрування (ID: XXXX-XXXX)
+2. **Encrypted**: Use our PGP key for encryption (ID: 4A2B-8C9D-E1F2-3456)
 3. **GitHub Security**: Використовуйте [GitHub Security Advisories](https://github.com/yourusername/RetroConsole/security/advisories)
 
 ### Інформація для включення
@@ -209,16 +209,16 @@ Subject: [SECURITY] XSS вразливість в терміналі
 ### Інструменти безпеки
 
 ```bash
-# Аудит npm залежностей
+# Audit npm dependencies
 npm audit
 
-# Виправлення вразливостей
+# Fix vulnerabilities
 npm audit fix
 
-# Перевірка з Snyk
+# Check with Snyk
 npx snyk test
 
-# ESLint security правила
+# ESLint security rules
 npm install --save-dev eslint-plugin-security
 ```
 

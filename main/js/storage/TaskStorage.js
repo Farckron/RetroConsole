@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Task Storage System
  * Handles saving and loading tasks from server API with localStorage fallback

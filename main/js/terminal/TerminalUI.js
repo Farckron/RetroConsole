@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Terminal UI
  * Handles terminal display and user interaction

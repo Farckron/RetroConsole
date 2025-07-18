@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Task Model
  * Represents a single task with all its properties and methods

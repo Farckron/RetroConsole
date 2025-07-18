@@ -2,40 +2,43 @@
 
 ## 🎯 Vision Statement
 
-Створити ностальгічний та ефективний менеджер завдань, який поєднує естетику класичних комп'ютерних терміналів з сучасними веб-технологіями, надаючи користувачам унікальний досвід управління завданнями.
+Create a nostalgic and efficient task manager that combines the aesthetics of classic computer terminals with modern web technologies, providing users with a unique task management experience.
 
 ## 🎨 Design Philosophy
 
-### Ретро Естетика
-- **Автентичність**: Справжній вигляд терміналів 80-90х років
-- **Мінімалізм**: Фокус на функціональності, а не на декорації
-- **Ностальгія**: Викликати приємні спогади про ранні комп'ютери
+### Retro Aesthetics
 
-### Користувацький Досвід
-- **Простота**: Інтуїтивні команди без складного навчання
-- **Швидкість**: Миттєвий відгук на дії користувача
-- **Ефективність**: Мінімум кліків для виконання завдань
+- **Authenticity**: True look of 80s-90s terminals
+- **Minimalism**: Focus on functionality, not decoration
+- **Nostalgia**: Evoke pleasant memories of early computers
+
+### User Experience
+
+- **Simplicity**: Intuitive commands without complex learning
+- **Speed**: Instant response to user actions
+- **Efficiency**: Minimum clicks to complete tasks
 
 ## 🎭 Visual Identity
 
-### Колірна Палітра
+### Color Palette
 
-#### Основна тема (Matrix Green)
+#### Main Theme (Matrix Green)
 ```css
 :root {
-  --primary-color: #00ff00;      /* Яскраво-зелений текст */
-  --secondary-color: #008000;    /* Темно-зелений для акцентів */
-  --background-color: #000000;   /* Чорний фон */
-  --border-color: #333333;       /* Темно-сірі рамки */
-  --error-color: #ff0000;        /* Червоний для помилок */
-  --warning-color: #ffff00;      /* Жовтий для попереджень */
+  --primary-color: #00ff00;      /* Bright green text */
+  --secondary-color: #008000;    /* Dark green for accents */
+  --background-color: #000000;   /* Black background */
+  --border-color: #333333;       /* Dark gray borders */
+  --error-color: #ff0000;        /* Red for errors */
+  --warning-color: #ffff00;      /* Yellow for warnings */
 }
 ```
 
-#### Альтернативні теми
-- **Amber**: Жовто-помаранчевий на чорному
-- **Blue**: Блакитний на темно-синьому
-- **White**: Білий на чорному (класичний DOS)
+#### Alternative Themes
+
+- **Amber**: Yellow-orange on black
+- **Blue**: Blue on dark blue
+- **White**: White on black (classic DOS)
 
 ### Типографіка
 
@@ -44,10 +47,11 @@
 font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 ```
 
-#### Розміри
-- **Заголовки**: 18px, bold
-- **Основний текст**: 14px, normal
-- **Дрібний текст**: 12px, normal
+#### Sizes
+
+- **Headers**: 18px, bold
+- **Main text**: 14px, normal
+- **Small text**: 12px, normal
 
 ### Анімації та Ефекти
 
@@ -63,7 +67,7 @@ font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 }
 ```
 
-#### Друк тексту
+#### Text Typing
 ```css
 @keyframes typewriter {
   from { width: 0; }
@@ -73,7 +77,7 @@ font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 
 ## 🖥️ Interface Design
 
-### Макет терміналу
+### Terminal Layout
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -97,42 +101,44 @@ font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 
 ## 🎮 Interaction Design
 
-### Система команд
+### Command System
 
-#### Основні команди
+#### Main Commands
 ```bash
-ls                    # Показати всі завдання
-add <description>     # Додати завдання
-complete <id>         # Виконати завдання
-delete <id>          # Видалити завдання
-clear                # Очистити всі завдання
-help                 # Показати довідку
-stats                # Показати статистику
-export               # Експортувати дані
-import               # Імпортувати дані
+ls                    # Show all tasks
+add <description>     # Add task
+complete <id>         # Complete task
+delete <id>          # Delete task
+clear                # Clear all tasks
+help                 # Show help
+stats                # Show statistics
+export               # Export data
+import               # Import data
 ```
 
-### Клавіатурні скорочення
+### Keyboard Shortcuts
 
-| Клавіша | Дія |
-|---------|-----|
-| ↑/↓ | Навігація по історії команд |
-| Tab | Автодоповнення |
-| Ctrl+C | Очистити поточну команду |
-| Ctrl+L | Очистити екран |
-| Esc | Скасувати поточну дію |
+| Key | Action |
+|-----|--------|
+| ↑/↓ | Navigate command history |
+| Tab | Auto-completion |
+| Ctrl+C | Clear current command |
+| Ctrl+L | Clear screen |
+| Esc | Cancel current action |
 
 ## 📱 Responsive Design
 
 ### Desktop (1200px+)
-- Повнорозмірний термінал
-- Всі функції доступні
-- Оптимальний розмір шрифту
+
+- Full-size terminal
+- All functions available
+- Optimal font size
 
 ### Mobile (< 768px)
-- Компактний режим
-- Більші кнопки для touch
-- Спрощений інтерфейс
+
+- Compact mode
+- Larger touch buttons
+- Simplified interface
 
 ## 🚀 Implementation Roadmap
 

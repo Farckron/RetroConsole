@@ -1,3 +1,5 @@
+"use strict";
+
 class TerminalApp {
     constructor() {
         this.taskManager = null;

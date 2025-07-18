@@ -4,104 +4,104 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 
-Ретро-стильний менеджер завдань з інтерфейсом терміналу. Створений для тих, хто любить естетику старих комп'ютерних терміналів та ефективне управління завданнями.
+A retro-style task manager with a terminal interface. Created for those who love the aesthetics of old computer terminals and efficient task management.
 
-## ✨ Особливості
+## ✨ Features
 
-- 🎨 **Ретро дизайн** - Автентичний вигляд старого терміналу
-- ⚡ **Швидкість** - Мінімалістичний інтерфейс без зайвих елементів
-- 🐳 **Docker Ready** - Легке розгортання в контейнері
-- 📱 **Адаптивність** - Працює на всіх пристроях
-- 💾 **Файлова база даних** - Прості JSON файли для зберігання
+- 🎨 **Retro Design** - Authentic old terminal look
+- ⚡ **Speed** - Minimalist interface without unnecessary elements
+- 🐳 **Docker Ready** - Easy deployment in containers
+- 📱 **Responsive** - Works on all devices
+- 💾 **File Database** - Simple JSON files for storage
 
-## 🚀 Швидкий старт
+## 🚀 Quick Start
 
-### Використання Docker (Рекомендовано)
+### Using Docker (Recommended)
 
 ```bash
-# Запуск з Docker
+# Run with Docker
 docker-compose -f docker-compose.dev.yml up --build
 
-# Відкрийте браузер: http://localhost:3000
+# Open browser: http://localhost:3000
 ```
 
-### Локальна установка
+### Local Installation
 
 ```bash
-# Встановлення залежностей
+# Install dependencies
 npm install
 
-# Запуск сервера
+# Start server
 npm run dev
 ```
 
-## 🐳 Docker команди
+## 🐳 Docker Commands
 
 ```bash
-# Запуск контейнера
+# Start container
 docker-compose -f docker-compose.dev.yml up
 
-# Зупинка контейнера
+# Stop container
 docker-compose -f docker-compose.dev.yml down
 
-# Перезапуск після змін
+# Restart after changes
 docker-compose -f docker-compose.dev.yml restart
 
-# Перегляд логів
+# View logs
 docker-compose -f docker-compose.dev.yml logs -f
 ```
 
-## 🏗️ Структура проекту
+## 🏗️ Project Structure
 
 ```
 RetroConsole/
-├── 📁 main/                    # Frontend файли
-│   ├── 📄 index.html          # Головна сторінка
-│   ├── 📁 css/                # Стилі
-│   │   ├── styles.css         # Основні стилі
-│   │   └── themes.css         # Теми оформлення
-│   ├── 📁 js/                 # JavaScript код
-│   │   ├── app.js             # Головний файл додатку
-│   │   ├── managers/          # Менеджери
-│   │   ├── models/            # Моделі даних
-│   │   ├── storage/           # Робота з даними
-│   │   └── terminal/          # UI терміналу
-│   ├── 📁 data/               # База даних
-│   │   └── tasks.json         # Файл з завданнями
-│   └── 📁 assets/             # Ресурси
-├── 📄 server.js               # Backend сервер (Node.js + Express)
-├── 📄 package.json            # Залежності проекту
-├── 🐳 Dockerfile.dev          # Docker конфігурація для розробки
-├── 🐳 docker-compose.dev.yml  # Docker Compose конфігурація
-└── 📁 docs/                   # Документація (API, архітектура)
+├── 📁 main/                    # Frontend files
+│   ├── 📄 index.html          # Main page
+│   ├── 📁 css/                # Styles
+│   │   ├── styles.css         # Main styles
+│   │   └── themes.css         # Theme styles
+│   ├── 📁 js/                 # JavaScript code
+│   │   ├── app.js             # Main application file
+│   │   ├── managers/          # Managers
+│   │   ├── models/            # Data models
+│   │   ├── storage/           # Data handling
+│   │   └── terminal/          # Terminal UI
+│   ├── 📁 data/               # Database
+│   │   └── tasks.json         # Tasks file
+│   └── 📁 assets/             # Resources
+├── 📄 server.js               # Backend server (Node.js + Express)
+├── 📄 package.json            # Project dependencies
+├── 🐳 Dockerfile.dev          # Docker configuration for development
+├── 🐳 docker-compose.dev.yml  # Docker Compose configuration
+└── 📁 docs/                   # Documentation (API, architecture)
 ```
 
-## 🎮 Команди терміналу
+## 🎮 Terminal Commands
 
-- `ls` - Показати всі завдання
-- `add <опис>` - Додати нове завдання
-- `complete <id>` - Позначити завдання як виконане
-- `delete <id>` - Видалити завдання
-- `clear` - Очистити всі завдання
-- `stats` - Показати статистику
-- `help` - Показати довідку
+- `ls` - Show all tasks
+- `add <description>` - Add new task
+- `complete <id>` - Mark task as completed
+- `delete <id>` - Delete task
+- `clear` - Clear all tasks
+- `stats` - Show statistics
+- `help` - Show help
 
 ## 🔌 API Endpoints
 
-| Метод | Endpoint | Опис |
-|-------|----------|------|
-| GET | `/api/tasks` | Отримати всі завдання |
-| POST | `/api/tasks` | Створити нове завдання |
-| PUT | `/api/tasks/:id/complete` | Позначити як виконане |
-| DELETE | `/api/tasks/:id` | Видалити завдання |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/tasks` | Get all tasks |
+| POST | `/api/tasks` | Create new task |
+| PUT | `/api/tasks/:id/complete` | Mark as completed |
+| DELETE | `/api/tasks/:id` | Delete task |
 
-## 🧪 Тестування
+## 🧪 Testing
 
 ```bash
-# Запустити тести
+# Run tests
 npm test
 ```
 
 ---
 
-**Особистий проект для управління завданнями з ретро-інтерфейсом**
+**Personal project for task management with retro interface**

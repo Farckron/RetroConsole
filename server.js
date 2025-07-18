@@ -7,12 +7,43 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const TASKS_FILE = path.join(__dirname, 'main', 'data', 'tasks.json');
 
+// Constants
+const TASK_STATUS = {
+    PENDING: 'pending',
+    COMPLETED: 'completed'
+};
+
+const HTTP_STATUS = {
+    OK: 200,
+    CREATED: 201,
+    BAD_REQUEST: 400,
+    NOT_FOUND: 404,
+    CONFLICT: 409,
+    INTERNAL_SERVER_ERROR: 500
+};
+
+const ERROR_MESSAGES = {
+    DESCRIPTION_REQUIRED: 'Description is required',
+    INVALID_TASK_ID: 'Invalid task ID',
+    TASK_NOT_FOUND: 'Task not found',
+    TASK_ALREADY_COMPLETED: 'Task is already completed',
+    TASK_ALREADY_EXISTS: 'Task already exists',
+    FAILED_TO_READ_TASKS: 'Failed to read tasks',
+    FAILED_TO_SAVE_TASK: 'Failed to save task',
+    INTERNAL_SERVER_ERROR: 'Internal server error',
+    INVALID_TASKS_DATA: 'Invalid tasks data',
+    ENDPOINT_NOT_FOUND: 'Endpoint not found'
+};
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('main'));
 
-// Utility function to read tasks from file
+/**
+ * Read tasks from JSON file
+ * @returns {Promise<Object>} Tasks data with metadata
+ */
 async function readTasksFromFile() {
     try {
         const data = await fs.readFile(TASKS_FILE, 'utf8');
@@ -34,7 +65,11 @@ async function readTasksFromFile() {
     }
 }
 
-// Utility function to write tasks to file
+/**
+ * Write tasks to JSON file
+ * @param {Object} tasksData - Tasks data with metadata
+ * @returns {Promise<boolean>} Success status
+ */
 async function writeTasksToFile(tasksData) {
     try {
         // Update metadata
@@ -51,14 +86,39 @@ async function writeTasksToFile(tasksData) {
     }
 }
 
-// Get next available ID
+/**
+ * Get next available task ID
+ * @param {Array} tasks - Array of tasks
+ * @returns {number} Next available ID
+ */
 function getNextId(tasks) {
     return tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
 }
 
+/**
+ * Sanitize user input to prevent XSS attacks
+ * @param {string} input - User input to sanitize
+ * @returns {string} Sanitized input
+ */
+function sanitizeInput(input) {
+    if (typeof input !== 'string') {
+        return '';
+    }
+    return input
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/&/g, '&amp;');
+}
+
 // API Routes
 
-// GET /api/tasks - Get all tasks
+/**
+ * GET /api/tasks - Get all tasks
+ * @route GET /api/tasks
+ * @returns {Object} Tasks data with metadata
+ */
 app.get('/api/tasks', async (req, res) => {
     try {
         const tasksData = await readTasksFromFile();
@@ -74,7 +134,12 @@ app.get('/api/tasks', async (req, res) => {
     }
 });
 
-// POST /api/tasks - Create new task
+/**
+ * POST /api/tasks - Create new task
+ * @route POST /api/tasks
+ * @param {string} description - Task description
+ * @returns {Object} Created task data
+ */
 app.post('/api/tasks', async (req, res) => {
     try {
         const { description } = req.body;
@@ -134,7 +199,12 @@ app.post('/api/tasks', async (req, res) => {
     }
 });
 
-// PUT /api/tasks/:id/complete - Mark task as completed
+/**
+ * PUT /api/tasks/:id/complete - Mark task as completed
+ * @route PUT /api/tasks/:id/complete
+ * @param {number} id - Task ID
+ * @returns {Object} Updated task data
+ */
 app.put('/api/tasks/:id/complete', async (req, res) => {
     try {
         const taskId = parseInt(req.params.id);
@@ -189,7 +259,12 @@ app.put('/api/tasks/:id/complete', async (req, res) => {
     }
 });
 
-// DELETE /api/tasks/:id - Delete task
+/**
+ * DELETE /api/tasks/:id - Delete task
+ * @route DELETE /api/tasks/:id
+ * @param {number} id - Task ID
+ * @returns {Object} Deleted task data
+ */
 app.delete('/api/tasks/:id', async (req, res) => {
     try {
         const taskId = parseInt(req.params.id);
@@ -237,7 +312,11 @@ app.delete('/api/tasks/:id', async (req, res) => {
     }
 });
 
-// DELETE /api/tasks - Clear all tasks
+/**
+ * DELETE /api/tasks - Clear all tasks
+ * @route DELETE /api/tasks
+ * @returns {Object} Success message with count
+ */
 app.delete('/api/tasks', async (req, res) => {
     try {
         const tasksData = await readTasksFromFile();
@@ -273,7 +352,11 @@ app.delete('/api/tasks', async (req, res) => {
     }
 });
 
-// GET /api/tasks/stats - Get task statistics
+/**
+ * GET /api/tasks/stats - Get task statistics
+ * @route GET /api/tasks/stats
+ * @returns {Object} Task statistics
+ */
 app.get('/api/tasks/stats', async (req, res) => {
     try {
         const tasksData = await readTasksFromFile();
@@ -297,7 +380,11 @@ app.get('/api/tasks/stats', async (req, res) => {
     }
 });
 
-// GET /api/tasks/export - Export tasks as JSON
+/**
+ * GET /api/tasks/export - Export tasks as JSON
+ * @route GET /api/tasks/export
+ * @returns {File} JSON file download
+ */
 app.get('/api/tasks/export', async (req, res) => {
     try {
         const tasksData = await readTasksFromFile();
@@ -314,7 +401,13 @@ app.get('/api/tasks/export', async (req, res) => {
     }
 });
 
-// POST /api/tasks/import - Import tasks from JSON
+/**
+ * POST /api/tasks/import - Import tasks from JSON
+ * @route POST /api/tasks/import
+ * @param {Array} tasks - Array of tasks to import
+ * @param {boolean} replaceExisting - Whether to replace existing tasks
+ * @returns {Object} Import results
+ */
 app.post('/api/tasks/import', async (req, res) => {
     try {
         const { tasks, replaceExisting = false } = req.body;

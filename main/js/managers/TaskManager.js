@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Task Manager
  * Coordinates task operations and interacts with server storage
