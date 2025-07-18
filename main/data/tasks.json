@@ -1,11 +1,19 @@
 {
-  "tasks": [],
+  "tasks": [
+    {
+      "id": 1,
+      "description": "task2",
+      "status": "pending",
+      "createdAt": "2025-07-18T20:36:55.253Z",
+      "completedAt": null
+    }
+  ],
   "metadata": {
     "version": "1.0",
     "created": "2024-01-17T16:00:00.000Z",
-    "lastModified": "2025-07-18T20:03:35.972Z",
-    "totalTasks": 0,
+    "lastModified": "2025-07-18T20:36:55.253Z",
+    "totalTasks": 1,
     "completedTasks": 0,
-    "pendingTasks": 0
+    "pendingTasks": 1
   }
 }

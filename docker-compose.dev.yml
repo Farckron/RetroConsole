@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  retro-console:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Монтуємо код для live reload
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
