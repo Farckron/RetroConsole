@@ -1,0 +1,361 @@
+/* Modern Terminal with Glassmorphism Effect */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Background Image */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('assets/backgrounds/ocean-storm.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -2;
+    opacity: 0.8;
+}
+
+/* Background Overlay */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(15, 32, 39, 0.9) 0%, 
+        rgba(32, 58, 67, 0.8) 50%, 
+        rgba(44, 83, 100, 0.9) 100%);
+    z-index: -1;
+}
+
+/* Terminal Container with Glassmorphism */
+.terminal {
+    width: 90%;
+    max-width: 900px;
+    height: 70vh;
+    min-height: 500px;
+    background: rgba(30, 41, 59, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 16px;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Terminal Header */
+.terminal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: rgba(51, 65, 85, 0.3);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    backdrop-filter: blur(10px);
+    z-index: 1;
+}
+
+/* Terminal Dots */
+.terminal::after {
+    content: '● ● ●';
+    position: absolute;
+    top: 8px;
+    left: 15px;
+    color: #64748b;
+    font-size: 12px;
+    z-index: 2;
+    letter-spacing: 3px;
+}
+
+/* Output Area */
+.output {
+    flex: 1;
+    padding: 40px 20px 20px 20px;
+    overflow-y: auto;
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.6;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+.output::-webkit-scrollbar {
+    width: 6px;
+}
+
+.output::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.output::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 3px;
+}
+
+.output::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+}
+
+/* Input Line */
+.input-line {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(51, 65, 85, 0.2);
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.prompt {
+    color: #10b981;
+    font-weight: 600;
+    margin-right: 8px;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+#input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #f1f5f9;
+    font-family: inherit;
+    font-size: 14px;
+    caret-color: #10b981;
+}
+
+#input::placeholder {
+    color: rgba(148, 163, 184, 0.5);
+}
+
+/* Text Styles */
+.line {
+    margin-bottom: 4px;
+    word-wrap: break-word;
+}
+
+.command {
+    color: #94a3b8;
+    opacity: 0.8;
+}
+
+.success {
+    color: #10b981;
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.2);
+}
+
+.error {
+    color: #ef4444;
+    text-shadow: 0 0 5px rgba(239, 68, 68, 0.2);
+}
+
+.warning {
+    color: #f59e0b;
+    text-shadow: 0 0 5px rgba(245, 158, 11, 0.2);
+}
+
+.info {
+    color: #3b82f6;
+    text-shadow: 0 0 5px rgba(59, 130, 246, 0.2);
+}
+
+.help-title {
+    color: #06b6d4;
+    font-weight: 600;
+    margin: 10px 0 5px 0;
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+.help-cmd {
+    color: #a78bfa;
+    font-family: 'SF Mono', monospace;
+    margin-left: 10px;
+}
+
+.help-key {
+    color: #fbbf24;
+    margin-left: 10px;
+}
+
+.task {
+    color: #e2e8f0;
+    padding: 2px 0;
+}
+
+.task-done {
+    color: #94a3b8;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.line {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Cursor Animation */
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+#input:focus + .cursor::after {
+    content: '|';
+    color: #10b981;
+    animation: blink 1s infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .terminal {
+        width: 95%;
+        height: 80vh;
+        border-radius: 12px;
+    }
+    
+    .output {
+        padding: 35px 15px 15px 15px;
+        font-size: 13px;
+    }
+    
+    .input-line {
+        padding: 12px 15px;
+    }
+    
+    #input {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .terminal {
+        width: 100%;
+        height: 85vh;
+        border-radius: 8px;
+        margin: 10px;
+    }
+    
+    .output {
+        font-size: 12px;
+    }
+    
+    #input {
+        font-size: 12px;
+    }
+}
+
+/* Focus Effects */
+.terminal:hover {
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* Selection */
+::selection {
+    background: rgba(16, 185, 129, 0.3);
+    color: #f1f5f9;
+}
+
+::-moz-selection {
+    background: rgba(16, 185, 129, 0.3);
+    color: #f1f5f9;
+}
+
+/* Loading Animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.loading {
+    animation: pulse 2s infinite;
+}
+
+/* Glow Effects */
+.glow {
+    text-shadow: 0 0 10px currentColor;
+}
+
+/* Terminal Window Controls */
+.terminal-controls {
+    position: absolute;
+    top: 8px;
+    right: 15px;
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+
+.control-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.control-btn:hover {
+    opacity: 1;
+}
+
+.control-btn.close {
+    background: #ef4444;
+}
+
+.control-btn.minimize {
+    background: #f59e0b;
+}
+
+.control-btn.maximize {
+    background: #10b981;
+}

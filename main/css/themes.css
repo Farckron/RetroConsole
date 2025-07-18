@@ -1,0 +1,100 @@
+/* Alternative Themes for Terminal */
+
+/* Ocean Storm Theme (Default) */
+.theme-ocean {
+    --bg-primary: rgba(30, 41, 59, 0.25);
+    --bg-secondary: rgba(51, 65, 85, 0.3);
+    --border-color: rgba(148, 163, 184, 0.2);
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent-color: #10b981;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --warning-color: #f59e0b;
+    --info-color: #3b82f6;
+}
+
+/* Dark Matrix Theme */
+.theme-matrix {
+    --bg-primary: rgba(0, 20, 0, 0.3);
+    --bg-secondary: rgba(0, 40, 0, 0.4);
+    --border-color: rgba(0, 255, 0, 0.3);
+    --text-primary: #00ff00;
+    --text-secondary: #008000;
+    --accent-color: #00ff00;
+    --success-color: #00ff41;
+    --error-color: #ff0040;
+    --warning-color: #ffff00;
+    --info-color: #00ffff;
+}
+
+/* Cyberpunk Theme */
+.theme-cyberpunk {
+    --bg-primary: rgba(20, 0, 40, 0.3);
+    --bg-secondary: rgba(40, 0, 80, 0.4);
+    --border-color: rgba(255, 0, 255, 0.3);
+    --text-primary: #ff00ff;
+    --text-secondary: #800080;
+    --accent-color: #ff00ff;
+    --success-color: #00ffff;
+    --error-color: #ff0080;
+    --warning-color: #ffff00;
+    --info-color: #0080ff;
+}
+
+/* Retro Amber Theme */
+.theme-amber {
+    --bg-primary: rgba(40, 30, 0, 0.3);
+    --bg-secondary: rgba(60, 45, 0, 0.4);
+    --border-color: rgba(255, 191, 0, 0.3);
+    --text-primary: #ffbf00;
+    --text-secondary: #cc9900;
+    --accent-color: #ffbf00;
+    --success-color: #00ff00;
+    --error-color: #ff4000;
+    --warning-color: #ff8000;
+    --info-color: #00bfff;
+}
+
+/* Apply theme variables */
+.terminal {
+    background: var(--bg-primary, rgba(30, 41, 59, 0.25));
+    border-color: var(--border-color, rgba(148, 163, 184, 0.2));
+}
+
+.terminal::before {
+    background: var(--bg-secondary, rgba(51, 65, 85, 0.3));
+}
+
+.input-line {
+    background: var(--bg-secondary, rgba(51, 65, 85, 0.2));
+}
+
+.output {
+    color: var(--text-primary, #e2e8f0);
+}
+
+.prompt {
+    color: var(--accent-color, #10b981);
+}
+
+#input {
+    color: var(--text-primary, #f1f5f9);
+    caret-color: var(--accent-color, #10b981);
+}
+
+.success {
+    color: var(--success-color, #10b981);
+}
+
+.error {
+    color: var(--error-color, #ef4444);
+}
+
+.warning {
+    color: var(--warning-color, #f59e0b);
+}
+
+.info {
+    color: var(--info-color, #3b82f6);
+}

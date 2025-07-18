@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Task Manager</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="terminal" id="terminal">
+        <div class="terminal-controls">
+            <button class="control-btn close"></button>
+            <button class="control-btn minimize"></button>
+            <button class="control-btn maximize"></button>
+        </div>
+        <div class="output" id="output"></div>
+        <div class="input-line">
+            <span class="prompt">$ </span>
+            <input type="text" id="input" autocomplete="off" spellcheck="false" autofocus>
+        </div>
+    </div>
+    
+    <script src="js/models/Task.js"></script>
+    <script src="js/storage/TaskStorage.js"></script>
+    <script src="js/managers/TaskManager.js"></script>
+    <script src="js/terminal/TerminalUI.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
