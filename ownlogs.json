@@ -1,0 +1,44 @@
+[
+  {
+    "dateTime": "2025-07-25 14:30:00",
+    "problem": "Помилка запуску: модуль 'express-session' не знайдено.",
+    "solution": "Встановлено модуль express-session і оновлено конфігурацію Docker Compose. Виконано `npm install` для встановлення залежностей (в т.ч. express-session). У файлі docker-compose.dev.yml додано маунт /app/node_modules, щоб зберегти пакети в контейнері. Перезапуск із `docker-compose up --build` успішно підключив модуль.",
+    "status": "вирішено",
+    "logs": "Error: Cannot find module 'express-session'\n    at Module._resolveFilename (internal/modules/cjs/loader.js:888:15)\n    at Module._load (internal/modules/cjs/loader.js:732:27)\n    ...\n    at node:internal/main/run_main_module:17:47"
+  },
+  {
+    "dateTime": "2025-07-25 15:00:00",
+    "problem": "Опис архітектури проєкту RetroConsole.",
+    "solution": "Проєкт складається з фронтенду та бекенду. Фронтенд – статичний HTML/CSS/JS застосунок (емуляція ретро-терміналу) для управління завданнями. Бекенд – сервер Node.js (Express) із REST API для завдань (/api/tasks) та автентифікацією Google OAuth 2.0 (Passport). Фронтенд надсилає запити до бекенду для збереження/отримання даних, але може працювати автономно, зберігаючи завдання у localStorage браузера. Авторизація реалізована через Google OAuth: користувач переходить за `/auth/google`, проходить вхід і сервер зберігає сесію (express-session) з профілем користувача. Дані завдань на сервері зберігаються у файлі `main/data/tasks.json` (JSON-файл база даних).",
+    "status": "описано",
+    "logs": ""
+  },
+  {
+    "dateTime": "2025-07-25 15:30:00",
+    "problem": "Запуск застосунку у Docker (docker-compose.dev.yml).",
+    "solution": "Встановлено Docker і Docker Compose. Виконано команду `docker-compose -f docker-compose.dev.yml up --build`. Docker збирає образ (Node 18 + залежності) та запускає контейнер dev-середовища. Завдяки маунту коду зміни застосовуються на льоту. Після запуску сервер доступний на http://localhost:3000.",
+    "status": "успішно (додаток працює у контейнері)",
+    "logs": "retro-console_1  | [nodemon] starting `node server.js`\nretro-console_1  | Server running on http://localhost:3000"
+  },
+  {
+    "dateTime": "2025-07-25 16:00:00",
+    "problem": "Локальний запуск сервера Node/NPM.",
+    "solution": "Виконано локальне встановлення залежностей (`npm install`). Запущено сервер командою `npm run dev` (або `npm start`). Сервер стартує на порту 3000. В консолі відображається повідомлення про успішний запуск, після чого інтерфейс доступний в браузері за адресою http://localhost:3000.",
+    "status": "успішно (сервер працює локально)",
+    "logs": "> terminal-task-manager@1.1.0 dev\n> nodemon server.js\nServer running on http://localhost:3000"
+  },
+  {
+    "dateTime": "2025-07-25 16:30:00",
+    "problem": "Запуск статичного HTML через Python HTTP сервер.",
+    "solution": "Перейшов у каталог `main/` проекту та запустив простий HTTP-сервер Python: `python3 -m http.server 8000`. Це дозволило віддати статичні файли фронтенду. Відкрив у браузері http://localhost:8000 для доступу до інтерфейсу. Інтерфейс завантажився, завдання зберігаються локально (localStorage), авторизація Google недоступна у цьому режимі.",
+    "status": "успішно (інтерфейс працює офлайн)",
+    "logs": "Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ..."
+  },
+  {
+    "dateTime": "2025-07-25 17:00:00",
+    "problem": "Запуск інтерфейсу через VS Code Live Server.",
+    "solution": "Відкрив проект у VS Code. Встановив/увімкнув розширення Live Server. Відкрив файл main/index.html та обрав \"Open with Live Server\". Розширення запустило локальний сервер і автоматично відкрило сторінку (наприклад, http://127.0.0.1:5500/main/index.html). Інтерфейс успішно завантажився (дані зберігаються в браузері як при статичному запуску).",
+    "status": "успішно",
+    "logs": "Live Server running at http://127.0.0.1:5500/"
+  }
+]
