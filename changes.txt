@@ -1,0 +1,22 @@
+Changes implemented on July 25, 2025
+===================================
+
+The following modifications were made to integrate Google authentication into the RetroConsole project and to prepare the codebase for further improvements:
+
+1. **Added Google OAuth support**
+   - Introduced `passport`, `passport-google-oauth20` and `express-session` dependencies in a new `package.json`.
+   - Implemented Google authentication routes (`/auth/google`, `/auth/google/callback`, `/auth/logout`) and session management in a new `server.js` based on the original server.  The server now uses Passport to authenticate users via Google.
+   - Added a new `/api/user` endpoint to expose the currently authenticated user's profile.
+
+2. **Updated project metadata**
+   - Bumped project version to `1.1.0` and updated the description to reflect the new authentication feature.
+   - Added an `oauth` keyword.
+
+3. **Added a login button to the frontend**
+   - Created `main/index.html` that includes a fixed-position "Sign in with Google" button linking to `/auth/google`.
+   - Added a new stylesheet `main/css/login.css` that defines the appearance and hover state for the login button.
+
+4. **Directory scaffolding**
+   - Established a `RetroConsole_modified` directory mirroring the original project structure, ready for additional feature integration (e.g., unified terminal engine, improved styling, and responsive design).
+
+To enable Google authentication, supply your Google OAuth client ID and secret via the `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` environment variables when running the server.  A `SESSION_SECRET` can also be provided to override the default session secret.
