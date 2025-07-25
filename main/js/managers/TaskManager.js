@@ -9,21 +9,26 @@ class TaskManager {
         this.storage = new TaskStorage();
         this.tasks = [];
         this.nextId = 1;
-        this.loadTasks();
+        this.isLoaded = false;
     }
 
     /**
      * Load tasks from server
      */
     async loadTasks() {
+        console.log('TaskManager: Loading tasks...');
         const result = await this.storage.loadTasks();
         if (result.success) {
             this.tasks = result.tasks || [];
-            this.nextId = this.tasks.length > 0 ? Math.max(...this.tasks.map(t => t.id)) + 1 : 1;
+            // Calculate next ID from existing tasks
+            this.nextId = this.tasks.length > 0 ? Math.max(...this.tasks.map(t => parseInt(t.id) || 0)) + 1 : 1;
+            this.isLoaded = true;
+            console.log(`TaskManager: Loaded ${this.tasks.length} tasks, next ID: ${this.nextId}`);
         } else {
             console.error('Failed to load tasks:', result.error);
             this.tasks = [];
             this.nextId = 1;
+            this.isLoaded = true;
         }
         return result;
     }
@@ -65,11 +70,8 @@ class TaskManager {
      * Get task by ID (from local cache)
      */
     getTaskById(id) {
-        const taskId = parseInt(id);
-        if (isNaN(taskId)) {
-            return null;
-        }
-        return this.tasks.find(task => task.id === taskId) || null;
+        // Support both string and number IDs
+        return this.tasks.find(task => String(task.id) === String(id)) || null;
     }
 
     /**
@@ -82,11 +84,11 @@ class TaskManager {
                 return { success: false, error: `Task #${taskId} not found` };
             }
 
-            if (task.isCompleted()) {
+            if (task.isCompleted) {
                 return { success: false, error: `Already done #${taskId}` };
             }
 
-            const result = await this.storage.completeTask(taskId);
+            const result = await this.storage.completeTask(task.id);
             
             if (result.success) {
                 // Reload tasks to get updated list from server
@@ -113,7 +115,7 @@ class TaskManager {
                 return { success: false, error: `Task #${taskId} not found` };
             }
 
-            const result = await this.storage.deleteTask(taskId);
+            const result = await this.storage.deleteTask(task.id);
             
             if (result.success) {
                 // Reload tasks to get updated list from server
@@ -164,7 +166,7 @@ class TaskManager {
             } else {
                 // Fallback to local calculation
                 const total = this.tasks.length;
-                const completed = this.tasks.filter(t => t.isCompleted()).length;
+                const completed = this.tasks.filter(t => t.isCompleted).length;
                 const pending = total - completed;
 
                 return {
@@ -178,7 +180,7 @@ class TaskManager {
         } catch (error) {
             // Fallback to local calculation
             const total = this.tasks.length;
-            const completed = this.tasks.filter(t => t.isCompleted()).length;
+            const completed = this.tasks.filter(t => t.isCompleted).length;
             const pending = total - completed;
 
             return {
@@ -210,7 +212,7 @@ class TaskManager {
      */
     filterTasksByStatus(status) {
         if (status === 'completed') {
-            return this.tasks.filter(t => t.isCompleted());
+            return this.tasks.filter(t => t.isCompleted);
         } else if (status === 'pending') {
             return this.tasks.filter(t => t.isPending());
         }

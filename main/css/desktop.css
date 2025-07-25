@@ -1,0 +1,546 @@
+/* Arch Desktop Interface Styles */
+
+/* Desktop Container */
+.arch-desktop {
+    margin: 0;
+    padding: 0;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+    background: #0c0c0c;
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Better scaling on high DPI displays */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.desktop-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Desktop Background */
+.desktop-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0c0c0c;
+    z-index: 0;
+}
+
+/* Window Container */
+.window-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 48px); /* Account for taskbar */
+    z-index: 10;
+    pointer-events: none; /* Allow clicks to pass through to desktop */
+}
+
+/* Window Styles */
+.desktop-window {
+    position: absolute;
+    background: rgba(12, 12, 12, 0.95);
+    border: 1px solid rgba(23, 147, 209, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    pointer-events: auto;
+    min-width: 400px;
+    min-height: 300px;
+}
+
+.desktop-window.active {
+    border-color: rgba(23, 147, 209, 0.6);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.7),
+        0 0 20px rgba(23, 147, 209, 0.3);
+}
+
+/* Window Header */
+.window-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(23, 147, 209, 0.1);
+    border-bottom: 1px solid rgba(23, 147, 209, 0.2);
+    cursor: move;
+    user-select: none;
+}
+
+.window-title {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.window-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.window-control-btn {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.window-control-btn:hover {
+    opacity: 0.8;
+}
+
+.window-control-btn.minimize {
+    background: #f59e0b;
+}
+
+.window-control-btn.maximize {
+    background: #10b981;
+}
+
+.window-control-btn.close {
+    background: #ef4444;
+}
+
+/* Window Content */
+.window-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Terminal Content in Window */
+.terminal-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+}
+
+.terminal-content .output {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.6;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(23, 147, 209, 0.3) transparent;
+    /* Improve text clarity */
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.terminal-content .input-line {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(23, 147, 209, 0.1);
+    border-top: 1px solid rgba(23, 147, 209, 0.2);
+}
+
+.terminal-content .prompt {
+    color: #1793d1;
+    font-weight: 600;
+    margin-right: 8px;
+    text-shadow: 0 0 8px rgba(23, 147, 209, 0.4), 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.terminal-content input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    caret-color: #1793d1;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Taskbar */
+.taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 48px;
+    background: rgba(12, 12, 12, 0.98);
+    border-top: 1px solid rgba(23, 147, 209, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 100;
+}
+
+.taskbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.arch-logo {
+    display: flex;
+    align-items: center;
+    color: #1793d1;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 0 0 8px rgba(23, 147, 209, 0.4), 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.app-launcher {
+    display: flex;
+    gap: 8px;
+}
+
+.launcher-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(23, 147, 209, 0.1);
+    border: 1px solid rgba(23, 147, 209, 0.3);
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.launcher-btn:hover {
+    background: rgba(23, 147, 209, 0.2);
+    border-color: rgba(23, 147, 209, 0.5);
+}
+
+.launcher-btn .icon {
+    font-size: 16px;
+}
+
+.taskbar-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.window-list {
+    display: flex;
+    gap: 8px;
+}
+
+.window-list-item {
+    padding: 6px 12px;
+    background: rgba(23, 147, 209, 0.1);
+    border: 1px solid rgba(23, 147, 209, 0.3);
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.window-list-item:hover {
+    background: rgba(23, 147, 209, 0.2);
+}
+
+.window-list-item.active {
+    background: rgba(23, 147, 209, 0.3);
+    border-color: rgba(23, 147, 209, 0.6);
+}
+
+.taskbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.system-tray {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.clock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff;
+    font-size: 12px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.clock .time {
+    font-weight: 600;
+}
+
+.clock .date {
+    opacity: 0.7;
+    font-size: 10px;
+}
+
+/* GPU Acceleration Base Styles */
+.desktop-window {
+    /* Enable hardware acceleration for smooth animations */
+    will-change: transform, opacity, box-shadow;
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    /* Force GPU layer creation */
+    transform: translateZ(0);
+}
+
+/* Animation performance optimizations */
+.desktop-window * {
+    /* Prevent unnecessary repaints during animations */
+    backface-visibility: hidden;
+}
+
+/* Smooth transitions for interactive elements */
+.window-control-btn,
+.launcher-btn,
+.window-list-item {
+    will-change: background-color, border-color, opacity;
+    transform: translateZ(0);
+}
+
+/* Terminal Text Styles */
+.terminal-content .line {
+    margin-bottom: 2px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.terminal-content .line.command {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.terminal-content .line.success {
+    color: #10b981;
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3), 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.terminal-content .line.error {
+    color: #ef4444;
+    text-shadow: 0 0 5px rgba(239, 68, 68, 0.3), 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.terminal-content .line.warning {
+    color: #f59e0b;
+    text-shadow: 0 0 5px rgba(245, 158, 11, 0.3), 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.terminal-content .line.info {
+    color: #3b82f6;
+    text-shadow: 0 0 5px rgba(59, 130, 246, 0.3), 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.terminal-content .line.help-title {
+    color: #1793d1;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(23, 147, 209, 0.4), 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.terminal-content .line.help-cmd {
+    color: #a3a3a3;
+    font-family: monospace;
+}
+
+.terminal-content .line.help-key {
+    color: #d1d5db;
+    font-family: monospace;
+}
+
+.terminal-content .line.task {
+    color: #ffffff;
+}
+
+.terminal-content .line.task-done {
+    color: #9ca3af;
+    text-decoration: line-through;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .taskbar {
+        height: 56px;
+        padding: 0 12px;
+    }
+    
+    .window-container {
+        height: calc(100% - 56px);
+    }
+    
+    .desktop-window {
+        min-width: 300px;
+        min-height: 250px;
+    }
+    
+    .launcher-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .launcher-btn .icon {
+        font-size: 14px;
+    }
+}
+/
+* Taskbar Styles */
+.taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: rgba(12, 12, 12, 0.95);
+    border-top: 1px solid rgba(23, 147, 209, 0.3);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 1000;
+}
+
+.taskbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.taskbar-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.taskbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Arch Logo */
+.arch-logo {
+    display: flex;
+    align-items: center;
+    color: #1793d1;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 0 0 10px rgba(23, 147, 209, 0.5);
+}
+
+/* App Launcher */
+.app-launcher {
+    display: flex;
+    gap: 8px;
+}
+
+.launcher-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(23, 147, 209, 0.1);
+    border: 1px solid rgba(23, 147, 209, 0.3);
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.2s ease;
+}
+
+.launcher-btn:hover {
+    background: rgba(23, 147, 209, 0.2);
+    border-color: rgba(23, 147, 209, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(23, 147, 209, 0.3);
+}
+
+.launcher-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(23, 147, 209, 0.2);
+}
+
+/* Window List */
+.window-list {
+    display: flex;
+    gap: 8px;
+}
+
+.window-item {
+    padding: 8px 16px;
+    background: rgba(23, 147, 209, 0.1);
+    border: 1px solid rgba(23, 147, 209, 0.3);
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.window-item:hover {
+    background: rgba(23, 147, 209, 0.2);
+    border-color: rgba(23, 147, 209, 0.5);
+}
+
+.window-item.active {
+    background: rgba(23, 147, 209, 0.3);
+    border-color: rgba(23, 147, 209, 0.6);
+}
+
+/* System Tray */
+.system-tray {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.clock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 1.2;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.clock .time {
+    font-weight: bold;
+    font-size: 14px;
+    color: #1793d1;
+}
+
+.clock .date {
+    color: #94a3b8;
+    font-size: 11px;
+}

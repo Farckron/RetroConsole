@@ -5,12 +5,19 @@
  * Represents a single task with all its properties and methods
  */
 class Task {
-    constructor(id, description) {
-        this.id = id;
+    constructor(description, id = null) {
+        this.id = id || this.generateId();
         this.description = description;
         this.status = 'pending';
         this.createdAt = new Date();
         this.completedAt = null;
+    }
+
+    /**
+     * Generate unique task ID (simple number)
+     */
+    generateId() {
+        return Date.now(); // Use timestamp as fallback ID
     }
 
     /**
@@ -36,7 +43,7 @@ class Task {
     /**
      * Check if task is completed
      */
-    isCompleted() {
+    get isCompleted() {
         return this.status === 'completed';
     }
 
@@ -61,7 +68,7 @@ class Task {
     toDetailedString() {
         const statusIcon = this.status === 'completed' ? '✓' : '○';
         const createdDate = this.createdAt.toLocaleDateString();
-        const completedInfo = this.completedAt ? 
+        const completedInfo = this.completedAt ?
             ` (completed: ${this.completedAt.toLocaleDateString()})` : '';
         return `[${this.id}] ${statusIcon} ${this.description} - Created: ${createdDate}${completedInfo}`;
     }
@@ -83,7 +90,7 @@ class Task {
      * Create task from JSON data
      */
     static fromJSON(data) {
-        const task = new Task(data.id, data.description);
+        const task = new Task(data.description, data.id);
         task.status = data.status;
         task.createdAt = new Date(data.createdAt);
         task.completedAt = data.completedAt ? new Date(data.completedAt) : null;
@@ -95,7 +102,7 @@ class Task {
      */
     static isValidTaskData(data) {
         return data &&
-            typeof data.id === 'number' &&
+            (typeof data.id === 'number' || typeof data.id === 'string') &&
             typeof data.description === 'string' &&
             data.description.trim().length > 0 &&
             ['pending', 'completed'].includes(data.status) &&

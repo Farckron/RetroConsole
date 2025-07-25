@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Arch Desktop Interface</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/desktop.css">
+</head>
+
+<body class="arch-desktop">
+    <!-- Desktop Container -->
+    <div id="desktop" class="desktop-container">
+        <!-- Desktop background and wallpaper -->
+        <div class="desktop-background"></div>
+
+        <!-- Window container for all windows -->
+        <div id="window-container" class="window-container"></div>
+
+        <!-- Desktop taskbar/panel -->
+        <div id="taskbar" class="taskbar">
+            <div class="taskbar-left">
+                <div class="arch-logo">
+                    <span class="logo-text">Arch</span>
+                </div>
+                <div class="app-launcher">
+                    <button class="launcher-btn" data-app="terminal" title="Terminal">
+                        <span class="icon">⚡</span>
+                    </button>
+                    <button class="launcher-btn" data-app="calculator" title="Calculator">
+                        <span class="icon">🔢</span>
+                    </button>
+                    <button class="launcher-btn" data-app="help" title="Help">
+                        <span class="icon">❓</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="taskbar-center">
+                <div id="window-list" class="window-list">
+                    <!-- Active windows will be listed here -->
+                </div>
+            </div>
+
+            <div class="taskbar-right">
+                <div class="system-tray">
+                    <div class="clock" id="clock">
+                        <span class="time">00:00</span>
+                        <span class="date">Jan 1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/models/Task.js"></script>
+    <script src="js/models/WindowModel.js"></script>
+    <script src="js/storage/TaskStorage.js"></script>
+    <script src="js/managers/TaskManager.js"></script>
+    <script src="js/terminal/TerminalInstance.js"></script>
+    <script src="js/apps/CalculatorApp.js"></script>
+    <script src="js/apps/HelpApp.js"></script>
+    <script src="js/desktop/AnimationEngine.js"></script>
+    <script src="js/desktop/HotkeyManager.js"></script>
+    <script src="js/desktop/AppRegistry.js"></script>
+    <script src="js/desktop/WindowManager.js"></script>
+    <script src="js/desktop/DesktopManager.js"></script>
+    <script src="js/desktop-app.js"></script>
+</body>
+
+</html>

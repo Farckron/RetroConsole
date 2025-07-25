@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #000;
+            color: #fff;
+            padding: 20px;
+        }
+        .terminal-content {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .output {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #222;
+        }
+        .input-line {
+            display: flex;
+            align-items: center;
+        }
+        .prompt {
+            color: #0f0;
+            margin-right: 8px;
+        }
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: monospace;
+            outline: none;
+        }
+        .line {
+            margin-bottom: 2px;
+        }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .info { color: #0ff; }
+        .help-title { color: #ff0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Terminal Test</h1>
+    <div class="terminal-content">
+        <div class="output" id="output"></div>
+        <div class="input-line">
+            <span class="prompt">$ </span>
+            <input type="text" id="input" autocomplete="off" spellcheck="false" autofocus>
+        </div>
+    </div>
+
+    <script src="js/models/Task.js"></script>
+    <script src="js/storage/TaskStorage.js"></script>
+    <script src="js/managers/TaskManager.js"></script>
+    <script>
+        let taskManager;
+        const output = document.getElementById('output');
+        const input = document.getElementById('input');
+
+        function out(text, cls = '') {
+            const line = document.createElement('div');
+            line.className = `line ${cls}`;
+            line.textContent = text;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        async function init() {
+            out('Initializing TaskManager...', 'info');
+            try {
+                taskManager = new TaskManager();
+                await taskManager.loadTasks();
+                out(`Loaded ${taskManager.getAllTasks().length} tasks`, 'success');
+                out('Type "add test task" to add a task', 'info');
+                out('Type "list" to list tasks', 'info');
+            } catch (error) {
+                out(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        input.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim();
+                if (!cmd) return;
+
+                out(`$ ${cmd}`, '');
+                input.value = '';
+
+                const [command, ...args] = cmd.split(' ');
+
+                try {
+                    switch (command.toLowerCase()) {
+                        case 'add':
+                            const text = args.join(' ');
+                            if (!text) {
+                                out('Usage: add <text>', 'error');
+                                break;
+                            }
+                            const result = await taskManager.createTask(text);
+                            if (result.success) {
+                                out(`Added task #${result.task.id}: ${result.task.description}`, 'success');
+                            } else {
+                                out(`Error: ${result.error}`, 'error');
+                            }
+                            break;
+
+                        case 'list':
+                            const tasks = taskManager.getAllTasks();
+                            if (tasks.length === 0) {
+                                out('No tasks', 'info');
+                            } else {
+                                tasks.forEach(task => {
+                                    const mark = task.isCompleted ? '✓' : '○';
+                                    out(`${task.id}. ${mark} ${task.description}`, task.isCompleted ? 'success' : '');
+                                });
+                            }
+                            break;
+
+                        case 'done':
+                            const id = args[0];
+                            if (!id) {
+                                out('Usage: done <id>', 'error');
+                                break;
+                            }
+                            const doneResult = await taskManager.completeTask(id);
+                            if (doneResult.success) {
+                                out(`Completed task #${id}`, 'success');
+                            } else {
+                                out(`Error: ${doneResult.error}`, 'error');
+                            }
+                            break;
+
+                        case 'clear':
+                            output.innerHTML = '';
+                            break;
+
+                        default:
+                            out(`Unknown command: ${command}`, 'error');
+                    }
+                } catch (error) {
+                    out(`Error: ${error.message}`, 'error');
+                }
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
