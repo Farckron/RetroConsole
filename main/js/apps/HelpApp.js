@@ -4,8 +4,9 @@
  * HelpApp - Simple help application
  */
 class HelpApp {
-    constructor(windowId) {
+    constructor(windowId, terminal) {
         this.windowId = windowId;
+        this.terminal = terminal;
         this.isInitialized = false;
     }
 
@@ -14,7 +15,7 @@ class HelpApp {
      */
     async init() {
         try {
-            this.createHelpContent();
+            this.showHelpContent();
             this.isInitialized = true;
         } catch (error) {
             console.error('Failed to initialize HelpApp:', error);
@@ -23,56 +24,70 @@ class HelpApp {
     }
 
     /**
-     * Create help content
+     * Show help content in terminal
      */
-    createHelpContent() {
-        const window = document.getElementById(this.windowId);
-        if (!window) {
-            throw new Error(`Window ${this.windowId} not found`);
+    showHelpContent() {
+        this.terminal.out('Arch Desktop Interface - Help', 'help-title');
+        this.terminal.out('', 'info');
+        
+        this.terminal.out('Keyboard Shortcuts:', 'help-title');
+        this.terminal.out('  Ctrl+Alt+T    - Open new terminal window', 'info');
+        this.terminal.out('  Ctrl+Alt+W    - Close active window', 'info');
+        this.terminal.out('', 'info');
+
+        this.terminal.out('Terminal Commands (in terminal mode):', 'help-title');
+        this.terminal.out('  add <text>    - Add a new task', 'info');
+        this.terminal.out('  list          - Show all tasks', 'info');
+        this.terminal.out('  list done     - Show completed tasks', 'info');
+        this.terminal.out('  list todo     - Show pending tasks', 'info');
+        this.terminal.out('  done <id>     - Mark task as completed', 'info');
+        this.terminal.out('  del <id>      - Delete task', 'info');
+        this.terminal.out('  clear         - Delete all tasks', 'info');
+        this.terminal.out('  stats         - Show statistics', 'info');
+        this.terminal.out('  export        - Export tasks to file', 'info');
+        this.terminal.out('  import        - Import tasks from file', 'info');
+        this.terminal.out('', 'info');
+
+        this.terminal.out('Application Commands:', 'help-title');
+        this.terminal.out('  apps          - List available applications', 'info');
+        this.terminal.out('  todo          - Switch to todo app', 'info');
+        this.terminal.out('  calculator    - Switch to calculator app', 'info');
+        this.terminal.out('  help          - Switch to help app (this)', 'info');
+        this.terminal.out('  exit          - Return to terminal mode', 'info');
+        this.terminal.out('', 'info');
+
+        this.terminal.out('Usage Tips:', 'help-title');
+        this.terminal.out('  - Use taskbar buttons to launch apps in new windows', 'info');
+        this.terminal.out('  - Type app names to switch between apps within a terminal', 'info');
+        this.terminal.out('  - Each terminal window can run different apps independently', 'info');
+        this.terminal.out('  - Use "exit" to return to terminal mode from any app', 'info');
+    }
+
+    /**
+     * Process commands in help mode
+     */
+    processCommand(cmd, args) {
+        switch (cmd.toLowerCase()) {
+            case 'refresh':
+            case 'reload':
+                this.showHelpContent();
+                break;
+            case 'help':
+                this.showHelp();
+                break;
+            default:
+                this.terminal.out(`Help app doesn't handle "${cmd}". Type "exit" to return to terminal.`, 'error');
         }
+    }
 
-        const content = window.querySelector('.window-content');
-        if (!content) {
-            throw new Error(`Window content area not found for ${this.windowId}`);
-        }
-
-        content.innerHTML = `
-            <div style="padding: 20px; color: #ffffff; font-family: monospace;">
-                <h2 style="color: #1793d1; margin-bottom: 20px;">Arch Desktop Interface - Help</h2>
-                
-                <h3 style="color: #10b981; margin: 15px 0 10px 0;">Keyboard Shortcuts:</h3>
-                <ul style="margin-left: 20px; line-height: 1.6;">
-                    <li><strong>Ctrl+Alt+T</strong> - Open new terminal window</li>
-                    <li><strong>Alt+F4</strong> - Close active window</li>
-                </ul>
-
-                <h3 style="color: #10b981; margin: 15px 0 10px 0;">Terminal Commands:</h3>
-                <ul style="margin-left: 20px; line-height: 1.6;">
-                    <li><strong>add &lt;text&gt;</strong> - Add a new task</li>
-                    <li><strong>list</strong> - Show all tasks</li>
-                    <li><strong>list done</strong> - Show completed tasks</li>
-                    <li><strong>list todo</strong> - Show pending tasks</li>
-                    <li><strong>done &lt;id&gt;</strong> - Mark task as completed</li>
-                    <li><strong>del &lt;id&gt;</strong> - Delete task</li>
-                    <li><strong>clear</strong> - Delete all tasks</li>
-                    <li><strong>stats</strong> - Show statistics</li>
-                    <li><strong>export</strong> - Export tasks to file</li>
-                    <li><strong>import</strong> - Import tasks from file</li>
-                    <li><strong>help</strong> - Show help</li>
-                </ul>
-
-                <h3 style="color: #10b981; margin: 15px 0 10px 0;">Applications:</h3>
-                <ul style="margin-left: 20px; line-height: 1.6;">
-                    <li><strong>Terminal</strong> - Task management terminal</li>
-                    <li><strong>Calculator</strong> - Simple calculator</li>
-                    <li><strong>Help</strong> - This help window</li>
-                </ul>
-
-                <p style="margin-top: 20px; color: #94a3b8; font-style: italic;">
-                    Click the icons in the taskbar to launch applications.
-                </p>
-            </div>
-        `;
+    /**
+     * Show help for help app
+     */
+    showHelp() {
+        this.terminal.out('Help App Commands:', 'help-title');
+        this.terminal.out('  refresh       - Refresh help content', 'info');
+        this.terminal.out('  help          - Show this help', 'info');
+        this.terminal.out('  exit          - Return to terminal mode', 'info');
     }
 
     /**

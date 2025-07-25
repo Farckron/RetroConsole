@@ -88,10 +88,14 @@ class DesktopManager {
      * Register default applications
      */
     registerDefaultApps() {
-        // Register the existing apps (terminal, calc, help)
-        this.appRegistry.registerApp('terminal', TerminalInstance, {
+        // Register the existing apps (terminal is the default mode, others are apps within terminal)
+        this.appRegistry.registerApp('terminal', null, {
             title: 'Terminal',
             icon: '⚡'
+        });
+        this.appRegistry.registerApp('todo', TodoApp, {
+            title: 'Todo',
+            icon: '📝'
         });
         this.appRegistry.registerApp('calculator', CalculatorApp, {
             title: 'Calculator',
@@ -107,18 +111,24 @@ class DesktopManager {
      * Setup default hotkeys
      */
     setupHotkeys() {
-        // Ctrl+Alt+T - Open new terminal window
-        this.hotkeyManager.registerHotkey('ctrl+alt+t', () => {
-            this.createNewWindow();
-        });
+        try {
+            // Ctrl+Alt+T - Open new terminal window
+            this.hotkeyManager.registerHotkey('ctrl+alt+t', () => {
+                this.createNewWindow();
+            }, { onConflict: 'warn' });
 
-        // Alt+F4 - Close active window
-        this.hotkeyManager.registerHotkey('alt+f4', () => {
-            const activeWindow = this.windowManager.getActiveWindow();
-            if (activeWindow) {
-                this.windowManager.closeWindow(activeWindow.id);
-            }
-        });
+            // Ctrl+Alt+W - Close active window
+            this.hotkeyManager.registerHotkey('ctrl+alt+w', () => {
+                const activeWindow = this.windowManager.getActiveWindow();
+                if (activeWindow) {
+                    this.windowManager.closeWindow(activeWindow.id);
+                }
+            }, { onConflict: 'warn' });
+
+            console.log('Default hotkeys registered successfully');
+        } catch (error) {
+            console.error('Failed to register default hotkeys:', error);
+        }
     }
 
     /**

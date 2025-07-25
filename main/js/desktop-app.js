@@ -86,38 +86,23 @@ class DesktopApp {
         if (!this.desktopManager) return;
 
         try {
-            let windowOptions = { title: appName };
-            
-            switch (appName) {
-                case 'terminal':
-                    windowOptions = { title: 'Terminal', width: 800, height: 600 };
-                    break;
-                case 'calculator':
-                    windowOptions = { title: 'Calculator', width: 400, height: 500 };
-                    break;
-                case 'help':
-                    windowOptions = { title: 'Help', width: 600, height: 400 };
-                    break;
-            }
+            // All apps now run within terminal windows
+            const windowOptions = { 
+                title: 'Terminal', 
+                width: 800, 
+                height: 600 
+            };
 
             const window = await this.desktopManager.createNewWindow(windowOptions);
             
-            if (window && appName !== 'terminal') {
-                // For non-terminal apps, create the appropriate app instance
-                let app;
-                switch (appName) {
-                    case 'calculator':
-                        app = new CalculatorApp(window.id);
-                        break;
-                    case 'help':
-                        app = new HelpApp(window.id);
-                        break;
-                }
-                
-                if (app) {
-                    await app.init();
-                    window.app = app;
-                }
+            // If launching a specific app, switch to it after terminal is ready
+            if (window && window.terminal && appName !== 'terminal') {
+                // Give the terminal a moment to initialize
+                setTimeout(() => {
+                    if (window.terminal.isInitialized) {
+                        window.terminal.switchToApp(appName);
+                    }
+                }, 100);
             }
 
         } catch (error) {

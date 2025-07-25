@@ -1,6 +1,21 @@
 /* Alternative Themes for Terminal */
 
-/* Ocean Storm Theme (Default) */
+/* Arch Linux Theme (Default) */
+.theme-arch {
+    --bg-primary: rgba(12, 12, 12, 0.85);
+    --bg-secondary: rgba(23, 147, 209, 0.1);
+    --border-color: rgba(23, 147, 209, 0.3);
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --accent-color: #1793d1;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --warning-color: #f59e0b;
+    --info-color: #3b82f6;
+    --blur-amount: 8px;
+}
+
+/* Ocean Storm Theme */
 .theme-ocean {
     --bg-primary: rgba(30, 41, 59, 0.25);
     --bg-secondary: rgba(51, 65, 85, 0.3);
@@ -58,29 +73,29 @@
 
 /* Apply theme variables */
 .terminal {
-    background: var(--bg-primary, rgba(30, 41, 59, 0.25));
-    border-color: var(--border-color, rgba(148, 163, 184, 0.2));
+    background: var(--bg-primary, rgba(12, 12, 12, 0.85));
+    border-color: var(--border-color, rgba(23, 147, 209, 0.3));
 }
 
 .terminal::before {
-    background: var(--bg-secondary, rgba(51, 65, 85, 0.3));
+    background: var(--bg-secondary, rgba(23, 147, 209, 0.1));
 }
 
 .input-line {
-    background: var(--bg-secondary, rgba(51, 65, 85, 0.2));
+    background: var(--bg-secondary, rgba(23, 147, 209, 0.1));
 }
 
 .output {
-    color: var(--text-primary, #e2e8f0);
+    color: var(--text-primary, #ffffff);
 }
 
 .prompt {
-    color: var(--accent-color, #10b981);
+    color: var(--accent-color, #1793d1);
 }
 
 #input {
-    color: var(--text-primary, #f1f5f9);
-    caret-color: var(--accent-color, #10b981);
+    color: var(--text-primary, #ffffff);
+    caret-color: var(--accent-color, #1793d1);
 }
 
 .success {

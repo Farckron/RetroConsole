@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Test</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/desktop.css">
+</head>
+<body class="arch-desktop">
+    <div id="desktop" class="desktop-container">
+        <div id="window-container" class="window-container">
+            <div id="test-window" class="desktop-window" style="position: absolute; top: 100px; left: 100px; width: 800px; height: 600px; z-index: 1;">
+                <div class="window-header">
+                    <span class="window-title">Terminal Test</span>
+                </div>
+                <div class="window-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/models/Task.js"></script>
+    <script src="js/storage/TaskStorage.js"></script>
+    <script src="js/managers/TaskManager.js"></script>
+    <script src="js/apps/TodoApp.js"></script>
+    <script src="js/apps/CalculatorApp.js"></script>
+    <script src="js/apps/HelpApp.js"></script>
+    <script src="js/desktop/AppRegistry.js"></script>
+    <script src="js/terminal/TerminalInstance.js"></script>
+
+    <script>
+        // Test the terminal instance functionality
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                console.log('Testing TerminalInstance...');
+                
+                // Create app registry
+                const appRegistry = new AppRegistry();
+                appRegistry.registerApp('terminal', null, { title: 'Terminal', icon: '⚡' });
+                appRegistry.registerApp('todo', TodoApp, { title: 'Todo', icon: '📝' });
+                appRegistry.registerApp('calculator', CalculatorApp, { title: 'Calculator', icon: '🔢' });
+                appRegistry.registerApp('help', HelpApp, { title: 'Help', icon: '❓' });
+                
+                // Create terminal instance
+                const terminal = new TerminalInstance('test-window', appRegistry);
+                await terminal.init();
+                
+                console.log('Terminal initialized successfully');
+                console.log('Try commands: apps, todo, calculator, help, exit');
+                
+            } catch (error) {
+                console.error('Test failed:', error);
+            }
+        });
+    </script>
+</body>
+</html>

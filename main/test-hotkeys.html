@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotkeyManager Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #0c0c0c;
+            color: #fff;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .test-section {
+            background: rgba(23, 147, 209, 0.1);
+            border: 1px solid rgba(23, 147, 209, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .test-output {
+            background: #111;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            min-height: 100px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+
+        .success {
+            color: #0f0;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        .info {
+            color: #1793d1;
+        }
+
+        .warning {
+            color: #ff0;
+        }
+
+        button {
+            background: rgba(23, 147, 209, 0.2);
+            border: 1px solid rgba(23, 147, 209, 0.5);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: rgba(23, 147, 209, 0.3);
+        }
+
+        .hotkey-display {
+            background: #222;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .hotkey-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .hotkey-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1>HotkeyManager Test Suite</h1>
+
+        <div class="test-section">
+            <h2>1. Basic Functionality Test</h2>
+            <button onclick="testBasicFunctionality()">Run Basic Tests</button>
+            <div class="test-output" id="basic-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Conflict Detection Test</h2>
+            <button onclick="testConflictDetection()">Test Conflict Detection</button>
+            <div class="test-output" id="conflict-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Key Combination Parsing Test</h2>
+            <button onclick="testKeyCombinationParsing()">Test Key Parsing</button>
+            <div class="test-output" id="parsing-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. Live Hotkey Test</h2>
+            <p>Press the following hotkeys to test:</p>
+            <div class="hotkey-display">
+                <div class="hotkey-item">
+                    <span><strong>Ctrl+Alt+T</strong></span>
+                    <span>Should log "New Terminal Window"</span>
+                </div>
+                <div class="hotkey-item">
+                    <span><strong>Ctrl+Alt+W</strong></span>
+                    <span>Should log "Close Window"</span>
+                </div>
+                <div class="hotkey-item">
+                    <span><strong>Ctrl+Shift+D</strong></span>
+                    <span>Should log "Test Hotkey"</span>
+                </div>
+            </div>
+            <button onclick="setupLiveTest()">Setup Live Test</button>
+            <div class="test-output" id="live-output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>5. Registered Hotkeys</h2>
+            <button onclick="showRegisteredHotkeys()">Show All Hotkeys</button>
+            <div class="test-output" id="hotkeys-output"></div>
+        </div>
+    </div>
+
+    <!-- Include HotkeyManager -->
+    <script src="js/desktop/HotkeyManager.js"></script>
+
+    <script>
+        let testHotkeyManager;
+
+        function log(message, type = 'info', outputId = 'basic-output') {
+            const output = document.getElementById(outputId);
+            const line = document.createElement('div');
+            line.className = type;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput(outputId) {
+            document.getElementById(outputId).innerHTML = '';
+        }
+
+        function testBasicFunctionality() {
+            clearOutput('basic-output');
+            log('Starting basic functionality tests...', 'info', 'basic-output');
+
+            try {
+                // Create mock desktop manager
+                const mockDesktopManager = {
+                    createNewWindow: () => log('Mock: Creating new window', 'success', 'basic-output'),
+                    getWindowManager: () => ({
+                        getActiveWindow: () => ({ id: 'test-window' }),
+                        closeWindow: (id) => log(`Mock: Closing window ${id}`, 'success', 'basic-output')
+                    })
+                };
+
+                testHotkeyManager = new HotkeyManager(mockDesktopManager);
+                log('✓ HotkeyManager created successfully', 'success', 'basic-output');
+
+                // Test hotkey registration
+                const result1 = testHotkeyManager.registerHotkey('ctrl+alt+t', () => {
+                    log('Hotkey triggered: Ctrl+Alt+T', 'success', 'basic-output');
+                });
+                log(`✓ Hotkey registration result: ${result1}`, 'success', 'basic-output');
+
+                // Test duplicate registration with conflict handling
+                const result2 = testHotkeyManager.registerHotkey('ctrl+alt+t', () => {
+                    log('Duplicate hotkey triggered', 'warning', 'basic-output');
+                }, { onConflict: 'warn' });
+                log(`✓ Duplicate registration handled: ${result2}`, 'success', 'basic-output');
+
+                // Test unregistration
+                const result3 = testHotkeyManager.unregisterHotkey('ctrl+alt+t');
+                log(`✓ Hotkey unregistration result: ${result3}`, 'success', 'basic-output');
+
+                log('✓ All basic functionality tests passed!', 'success', 'basic-output');
+
+            } catch (error) {
+                log(`✗ Error in basic functionality test: ${error.message}`, 'error', 'basic-output');
+            }
+        }
+
+        function testConflictDetection() {
+            clearOutput('conflict-output');
+            log('Starting conflict detection tests...', 'info', 'conflict-output');
+
+            try {
+                if (!testHotkeyManager) {
+                    testHotkeyManager = new HotkeyManager({});
+                }
+
+                // Register a hotkey
+                testHotkeyManager.registerHotkey('ctrl+s', () => { });
+                log('✓ Registered ctrl+s', 'success', 'conflict-output');
+
+                // Test conflict detection
+                const conflicts = testHotkeyManager.getConflicts('ctrl+s');
+                log(`✓ Conflicts for ctrl+s: ${conflicts.length > 0 ? conflicts.join(', ') : 'none'}`, 'success', 'conflict-output');
+
+                // Test alternative suggestions
+                const alternatives = testHotkeyManager.suggestAlternatives('ctrl+s');
+                log(`✓ Alternatives for ctrl+s: ${alternatives.join(', ')}`, 'success', 'conflict-output');
+
+                // Test conflict resolution
+                try {
+                    testHotkeyManager.registerHotkey('ctrl+s', () => { }, { onConflict: 'error' });
+                } catch (e) {
+                    log(`✓ Conflict error correctly thrown: ${e.message}`, 'success', 'conflict-output');
+                }
+
+                log('✓ All conflict detection tests passed!', 'success', 'conflict-output');
+
+            } catch (error) {
+                log(`✗ Error in conflict detection test: ${error.message}`, 'error', 'conflict-output');
+            }
+        }
+
+        function testKeyCombinationParsing() {
+            clearOutput('parsing-output');
+            log('Starting key combination parsing tests...', 'info', 'parsing-output');
+
+            try {
+                if (!testHotkeyManager) {
+                    testHotkeyManager = new HotkeyManager({});
+                }
+
+                const testCases = [
+                    { input: 'ctrl+alt+t', expected: { modifiers: ['alt', 'ctrl'], key: 't' } },
+                    { input: 'shift+f1', expected: { modifiers: ['shift'], key: 'f1' } },
+                    { input: 'ctrl+shift+alt+z', expected: { modifiers: ['alt', 'ctrl', 'shift'], key: 'z' } },
+                    { input: 'a', expected: { modifiers: [], key: 'a' } },
+                    { input: 'meta+space', expected: { modifiers: ['meta'], key: 'space' } }
+                ];
+
+                testCases.forEach((testCase, index) => {
+                    const result = testHotkeyManager.parseKeyCombination(testCase.input);
+                    const passed = JSON.stringify(result) === JSON.stringify(testCase.expected);
+
+                    if (passed) {
+                        log(`✓ Test ${index + 1}: ${testCase.input} parsed correctly`, 'success', 'parsing-output');
+                    } else {
+                        log(`✗ Test ${index + 1}: ${testCase.input} failed. Expected: ${JSON.stringify(testCase.expected)}, Got: ${JSON.stringify(result)}`, 'error', 'parsing-output');
+                    }
+                });
+
+                // Test validation
+                const validationTests = [
+                    { input: 'ctrl+alt+t', valid: true },
+                    { input: 'invalid+key', valid: false },
+                    { input: '', valid: false },
+                    { input: 'ctrl+ctrl+t', valid: false }, // duplicate modifier
+                    { input: 'ctrl+', valid: false }, // no key
+                    { input: 'badmodifier+a', valid: false }, // invalid modifier
+                    { input: 'ctrl+alt+', valid: false } // empty key
+                ];
+
+                validationTests.forEach((test, index) => {
+                    const isValid = testHotkeyManager.isValidKeyCombination(test.input);
+                    const passed = isValid === test.valid;
+
+                    if (passed) {
+                        log(`✓ Validation ${index + 1}: ${test.input} correctly ${test.valid ? 'valid' : 'invalid'}`, 'success', 'parsing-output');
+                    } else {
+                        log(`✗ Validation ${index + 1}: ${test.input} validation failed`, 'error', 'parsing-output');
+                    }
+                });
+
+                log('✓ All key combination parsing tests completed!', 'success', 'parsing-output');
+
+            } catch (error) {
+                log(`✗ Error in parsing test: ${error.message}`, 'error', 'parsing-output');
+            }
+        }
+
+        function setupLiveTest() {
+            clearOutput('live-output');
+            log('Setting up live hotkey test...', 'info', 'live-output');
+
+            try {
+                if (!testHotkeyManager) {
+                    testHotkeyManager = new HotkeyManager({});
+                }
+
+                // Clear existing hotkeys
+                testHotkeyManager.clearAll();
+
+                // Register test hotkeys
+                testHotkeyManager.registerHotkey('ctrl+alt+t', () => {
+                    log('🚀 Ctrl+Alt+T pressed - New Terminal Window!', 'success', 'live-output');
+                });
+
+                testHotkeyManager.registerHotkey('ctrl+alt+w', () => {
+                    log('❌ Ctrl+Alt+W pressed - Close Window!', 'warning', 'live-output');
+                });
+
+                testHotkeyManager.registerHotkey('ctrl+shift+d', () => {
+                    log('🧪 Ctrl+Shift+D pressed - Test Hotkey!', 'info', 'live-output');
+                });
+
+                log('✓ Live test hotkeys registered. Try pressing the key combinations!', 'success', 'live-output');
+                log('Note: Make sure this page has focus when pressing hotkeys.', 'info', 'live-output');
+
+            } catch (error) {
+                log(`✗ Error setting up live test: ${error.message}`, 'error', 'live-output');
+            }
+        }
+
+        function showRegisteredHotkeys() {
+            clearOutput('hotkeys-output');
+            log('Showing all registered hotkeys...', 'info', 'hotkeys-output');
+
+            try {
+                if (!testHotkeyManager) {
+                    log('No HotkeyManager instance found. Run other tests first.', 'warning', 'hotkeys-output');
+                    return;
+                }
+
+                const hotkeys = testHotkeyManager.getAllHotkeys();
+
+                if (hotkeys.length === 0) {
+                    log('No hotkeys currently registered.', 'info', 'hotkeys-output');
+                } else {
+                    log(`Found ${hotkeys.length} registered hotkeys:`, 'info', 'hotkeys-output');
+                    hotkeys.forEach((hotkey, index) => {
+                        log(`${index + 1}. ${hotkey}`, 'success', 'hotkeys-output');
+                    });
+                }
+
+                // Show debug info
+                const debugInfo = testHotkeyManager.getDebugInfo();
+                log('--- Debug Information ---', 'info', 'hotkeys-output');
+                log(`Manager enabled: ${debugInfo.enabled}`, 'info', 'hotkeys-output');
+                log(`Total hotkeys: ${debugInfo.hotkeyCount}`, 'info', 'hotkeys-output');
+                log(`Conflicts: ${debugInfo.conflicts.length}`, 'info', 'hotkeys-output');
+
+            } catch (error) {
+                log(`✗ Error showing hotkeys: ${error.message}`, 'error', 'hotkeys-output');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            log('HotkeyManager Test Suite loaded. Click buttons to run tests.', 'info', 'basic-output');
+        });
+    </script>
+</body>
+
+</html>

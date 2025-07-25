@@ -9,11 +9,14 @@ class TerminalInstance {
         this.windowId = windowId;
         this.appRegistry = appRegistry;
         this.taskManager = null;
+        this.currentApp = null;
+        this.currentAppName = 'terminal';
         this.elements = {};
         this.history = [];
         this.historyIndex = -1;
         this.commandBuffer = '';
         this.isInitialized = false;
+        this.appInstances = new Map();
     }
 
     /**
@@ -139,12 +142,115 @@ class TerminalInstance {
     showWelcome() {
         this.out('Terminal Task Manager', 'help-title');
         this.out('Type "help" or press Ctrl+H for commands', 'info');
+        this.out('Type "apps" to see available applications', 'info');
         
         // Show task count for debugging
         if (this.taskManager) {
             const taskCount = this.taskManager.getAllTasks().length;
             this.out(`Loaded ${taskCount} tasks`, 'info');
         }
+    }
+
+    /**
+     * Switch to a different application
+     */
+    async switchToApp(appName) {
+        if (!this.appRegistry || !this.appRegistry.hasApp(appName)) {
+            this.out(`App '${appName}' not found. Type 'apps' to see available apps.`, 'error');
+            return;
+        }
+
+        try {
+            // If switching to the same app, just show a message
+            if (this.currentAppName === appName) {
+                this.out(`Already in ${appName} mode`, 'info');
+                return;
+            }
+
+            // Clean up current app if it's not terminal
+            if (this.currentApp && this.currentAppName !== 'terminal') {
+                if (typeof this.currentApp.destroy === 'function') {
+                    this.currentApp.destroy();
+                }
+            }
+
+            this.currentAppName = appName;
+
+            // Handle terminal mode specially
+            if (appName === 'terminal') {
+                this.currentApp = null;
+                this.updatePrompt();
+                this.out('Switched to terminal mode', 'success');
+                return;
+            }
+
+            // Get or create app instance
+            let appInstance = this.appInstances.get(appName);
+            if (!appInstance) {
+                const appInfo = this.appRegistry.getApp(appName);
+                if (appInfo && appInfo.class) {
+                    appInstance = new appInfo.class(this.windowId, this);
+                    this.appInstances.set(appName, appInstance);
+                }
+            }
+
+            if (appInstance) {
+                this.currentApp = appInstance;
+                
+                // Initialize app if it has an init method
+                if (typeof appInstance.init === 'function') {
+                    await appInstance.init();
+                }
+
+                this.updatePrompt();
+                this.out(`Switched to ${appName} mode. Type 'exit' to return to terminal.`, 'success');
+            } else {
+                this.out(`Failed to create ${appName} instance`, 'error');
+            }
+
+        } catch (error) {
+            console.error(`Error switching to app ${appName}:`, error);
+            this.out(`Error switching to ${appName}: ${error.message}`, 'error');
+        }
+    }
+
+    /**
+     * Update the terminal prompt based on current app
+     */
+    updatePrompt() {
+        const promptElement = this.elements.input?.parentElement?.querySelector('.prompt');
+        if (promptElement) {
+            if (this.currentAppName === 'terminal') {
+                promptElement.textContent = '$ ';
+            } else {
+                promptElement.textContent = `${this.currentAppName}> `;
+            }
+        }
+    }
+
+    /**
+     * List available applications
+     */
+    listApps() {
+        this.out('Available applications:', 'help-title');
+        
+        if (this.appRegistry) {
+            const apps = this.appRegistry.getAllApps();
+            apps.forEach(app => {
+                const current = app.name === this.currentAppName ? ' (current)' : '';
+                this.out(`  ${app.options.icon} ${app.name} - ${app.options.title}${current}`, 'info');
+            });
+        }
+        
+        this.out('Type app name to switch (e.g., "calculator", "help")', 'info');
+        this.out('Type "exit" to return to terminal mode', 'info');
+    }
+
+    /**
+     * Get current app name
+     */
+    getCurrentApp() {
+        return this.currentAppName;
     }
 
 
@@ -181,13 +287,54 @@ class TerminalInstance {
         this.addHistory(input);
         this.elements.input.value = '';
         
+        const [cmd, ...args] = input.split(' ');
+        
+        // Check for app switching commands first
+        if (this.appRegistry && this.appRegistry.hasApp(cmd.toLowerCase())) {
+            this.switchToApp(cmd.toLowerCase());
+            return;
+        }
+        
+        // Handle special commands that work in any mode
+        switch (cmd.toLowerCase()) {
+            case 'exit':
+            case 'quit':
+                if (this.currentAppName !== 'terminal') {
+                    this.switchToApp('terminal');
+                } else {
+                    this.out('Use hotkey to close window', 'info');
+                }
+                break;
+            case 'apps':
+                this.listApps();
+                break;
+            case 'clear':
+                this.clear();
+                break;
+            default:
+                // If we're in terminal mode, handle terminal commands
+                if (this.currentAppName === 'terminal') {
+                    this.executeTerminalCommand(cmd, args);
+                } else {
+                    // Pass command to current app if it has a processCommand method
+                    if (this.currentApp && typeof this.currentApp.processCommand === 'function') {
+                        this.currentApp.processCommand(cmd, args);
+                    } else {
+                        this.out(`Unknown command: ${cmd}. Type 'exit' to return to terminal or 'apps' to see available apps.`, 'error');
+                    }
+                }
+        }
+    }
+
+    /**
+     * Execute terminal-specific commands
+     */
+    executeTerminalCommand(cmd, args) {
         // Check if TaskManager is initialized
         if (!this.taskManager) {
             this.out('Error: TaskManager not initialized', 'error');
             return;
         }
-        
-        const [cmd, ...args] = input.split(' ');
         
         switch (cmd.toLowerCase()) {
             case 'add':
@@ -238,8 +385,15 @@ class TerminalInstance {
             case 'reset':
                 this.resetToDefault();
                 break;
+            case 'todo':
+                this.switchToApp('todo');
+                break;
+            case 'calc':
+            case 'calculator':
+                this.switchToApp('calculator');
+                break;
             default:
-                this.out(`Unknown command: ${cmd}`, 'error');
+                this.out(`Unknown command: ${cmd}. Type 'help' for available commands or 'apps' to see available apps.`, 'error');
         }
     }
 
@@ -434,27 +588,52 @@ class TerminalInstance {
      * Show help
      */
     help() {
-        this.out('Commands:', 'help-title');
-        
-        const commands = [
-            ['add, a', '<text>', 'Add a new task'],
-            ['list, ls, l', '', 'Show all tasks'],
-            ['list done', '', 'Show completed tasks'],
-            ['list todo', '', 'Show pending tasks'],
-            ['done, d', '<id>', 'Mark task as completed'],
-            ['del, rm', '<id>', 'Delete task'],
-            ['clear, c', '', 'Delete all tasks'],
-            ['stats, s', '', 'Show statistics'],
-            ['export, save', '', 'Export tasks to file'],
-            ['import, load', '', 'Import tasks from file'],
-            ['reset', '', 'Reset to default tasks']
-        ];
-        
-        commands.forEach(([cmd, args, desc]) => {
-            const cmdText = cmd.padEnd(10);
-            const argsText = args.padEnd(8);
-            this.out(`${cmdText} ${argsText} ${desc}`, 'help-cmd');
-        });
+        if (this.currentAppName === 'terminal') {
+            this.out('Terminal Commands:', 'help-title');
+            
+            const commands = [
+                ['add, a', '<text>', 'Add a new task'],
+                ['list, ls, l', '', 'Show all tasks'],
+                ['list done', '', 'Show completed tasks'],
+                ['list todo', '', 'Show pending tasks'],
+                ['done, d', '<id>', 'Mark task as completed'],
+                ['del, rm', '<id>', 'Delete task'],
+                ['clear, c', '', 'Delete all tasks'],
+                ['stats, s', '', 'Show statistics'],
+                ['export, save', '', 'Export tasks to file'],
+                ['import, load', '', 'Import tasks from file'],
+                ['reset', '', 'Reset to default tasks']
+            ];
+            
+            commands.forEach(([cmd, args, desc]) => {
+                const cmdText = cmd.padEnd(12);
+                const argsText = args.padEnd(8);
+                this.out(`${cmdText} ${argsText} ${desc}`, 'help-cmd');
+            });
+
+            this.out('Application Commands:', 'help-title');
+            const appCommands = [
+                ['apps', '', 'List available applications'],
+                ['calculator', '', 'Switch to calculator app'],
+                ['help', '', 'Switch to help app'],
+                ['exit', '', 'Return to terminal (when in app)']
+            ];
+            
+            appCommands.forEach(([cmd, args, desc]) => {
+                const cmdText = cmd.padEnd(12);
+                const argsText = args.padEnd(8);
+                this.out(`${cmdText} ${argsText} ${desc}`, 'help-cmd');
+            });
+        } else {
+            this.out(`Help for ${this.currentAppName} mode:`, 'help-title');
+            this.out('Type "exit" to return to terminal mode', 'info');
+            this.out('Type "apps" to see all available applications', 'info');
+            
+            // Let the current app provide its own help if available
+            if (this.currentApp && typeof this.currentApp.showHelp === 'function') {
+                this.currentApp.showHelp();
+            }
+        }
         
         this.out('Keyboard shortcuts:', 'help-title');
         const shortcuts = [
@@ -563,18 +742,29 @@ class TerminalInstance {
         const input = this.elements.input.value.trim();
         if (!input) return;
         
-        const commands = [
-            'add', 'a',
-            'list', 'ls', 'l',
-            'done', 'd',
-            'del', 'rm',
-            'clear', 'c',
-            'help', 'h', '?',
-            'stats', 's',
-            'export', 'save',
-            'import', 'load',
-            'reset'
-        ];
+        let commands = [];
+        
+        if (this.currentAppName === 'terminal') {
+            commands = [
+                'add', 'a',
+                'list', 'ls', 'l',
+                'done', 'd',
+                'del', 'rm',
+                'clear', 'c',
+                'help', 'h', '?',
+                'stats', 's',
+                'export', 'save',
+                'import', 'load',
+                'reset',
+                'apps', 'todo', 'calculator', 'exit'
+            ];
+        } else if (this.currentAppName === 'todo') {
+            commands = ['add', 'new', 'list', 'show', 'done', 'complete', 'delete', 'remove', 'stats', 'help', 'exit'];
+        } else if (this.currentAppName === 'calculator') {
+            commands = ['clear', 'memory', 'store', 'recall', 'help', 'exit'];
+        } else {
+            commands = ['help', 'exit', 'apps'];
+        }
         
         const matches = commands.filter(cmd => cmd.startsWith(input.toLowerCase()));
         
@@ -611,9 +801,43 @@ class TerminalInstance {
      * Destroy the terminal instance
      */
     destroy() {
-        if (this.elements.fileInput && this.elements.fileInput.parentNode) {
-            this.elements.fileInput.parentNode.removeChild(this.elements.fileInput);
+        try {
+            // Clean up current app
+            if (this.currentApp && typeof this.currentApp.destroy === 'function') {
+                this.currentApp.destroy();
+            }
+
+            // Clean up all app instances
+            for (const [appName, appInstance] of this.appInstances) {
+                if (appInstance && typeof appInstance.destroy === 'function') {
+                    appInstance.destroy();
+                }
+            }
+            this.appInstances.clear();
+
+            // Clean up file input
+            if (this.elements.fileInput && this.elements.fileInput.parentNode) {
+                this.elements.fileInput.parentNode.removeChild(this.elements.fileInput);
+            }
+
+            // Clean up event listeners
+            if (this.elements.input) {
+                this.elements.input.removeEventListener('keydown', this.handleKeyDown);
+            }
+
+            // Reset state
+            this.currentApp = null;
+            this.currentAppName = 'terminal';
+            this.taskManager = null;
+            this.elements = {};
+            this.history = [];
+            this.historyIndex = -1;
+            this.commandBuffer = '';
+            this.isInitialized = false;
+
+            console.log(`TerminalInstance ${this.windowId} destroyed`);
+        } catch (error) {
+            console.error('Error during TerminalInstance cleanup:', error);
         }
-        this.isInitialized = false;
     }
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,11 +12,13 @@
             color: #fff;
             padding: 20px;
         }
+
         .terminal-content {
             background: #111;
             padding: 20px;
             border-radius: 8px;
         }
+
         .output {
             height: 300px;
             overflow-y: auto;
@@ -23,14 +26,17 @@
             padding: 10px;
             background: #222;
         }
+
         .input-line {
             display: flex;
             align-items: center;
         }
+
         .prompt {
             color: #0f0;
             margin-right: 8px;
         }
+
         input {
             flex: 1;
             background: transparent;
@@ -39,15 +45,30 @@
             font-family: monospace;
             outline: none;
         }
+
         .line {
             margin-bottom: 2px;
         }
-        .success { color: #0f0; }
-        .error { color: #f00; }
-        .info { color: #0ff; }
-        .help-title { color: #ff0; font-weight: bold; }
+
+        .success {
+            color: #0f0;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        .info {
+            color: #0ff;
+        }
+
+        .help-title {
+            color: #ff0;
+            font-weight: bold;
+        }
     </style>
 </head>
+
 <body>
     <h1>Terminal Test</h1>
     <div class="terminal-content">
@@ -155,4 +176,5 @@
         init();
     </script>
 </body>
+
 </html>
